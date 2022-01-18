@@ -4,10 +4,10 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Button } from 'antd'
 import { DeXPairsTable } from '../components/tables/dex-pairs'
-import styles from '../styles/Home.module.css'
 import { DEX_PROTOCOLS } from '../common/enums/types'
 import { openNotificationWithIcon } from '../common/utilities/notifications'
 import { getUniSwapTrades } from '../common/api/bitquery'
+import styles from '../styles/Home.module.scss'
 
 const Home: NextPage = () => {
   const [ephemeral, setEphemeral] = useState({})
