@@ -1,0 +1,75 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  #__next {
+    display: flex;
+    justify-content: center;
+  }
+  main {
+    max-width: 1320px;
+    width: 100%;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Class Generating
+@for $i from 1 through 50 {
+  // Margin spacing
+  .mt-#{$i} {
+    margin-top: #{math.div($i, 10)}rem;
+  }
+  .mb-#{$i} {
+    margin-bottom: #{math.div($i, 10)}rem;
+  }
+  .ml-#{$i} {
+    margin-left: #{math.div($i, 10)}rem;
+  }
+  .mr-#{$i} {
+    margin-right: #{math.div($i, 10)}rem;
+  }
+  .mx-#{$i} {
+    margin-left: #{math.div($i, 10)}rem;
+    margin-right: #{math.div($i, 10)}rem;
+  }
+  .my-#{$i} {
+    margin-top: #{math.div($i, 10)}rem;
+    margin-bottom: #{math.div($i, 10)}rem;
+  }
+  // Padding spacing
+  .pt-#{$i} {
+    padding-top: #{math.div($i, 10)}rem;
+  }
+  .pb-#{$i} {
+    padding-bottom: #{math.div($i, 10)}rem;
+  }
+  .pl-#{$i} {
+    padding-left: #{math.div($i, 10)}rem;
+  }
+  .pr-#{$i} {
+    padding-right: #{math.div($i, 10)}rem;
+  }
+  .px-#{$i} {
+    padding-left: #{math.div($i, 10)}rem;
+    padding-right: #{math.div($i, 10)}rem;
+  }
+  .py-#{$i} {
+    padding-top: #{math.div($i, 10)}rem;
+    padding-bottom: #{math.div($i, 10)}rem;
+  }
+  // Font Sizing
+  .font-size-#{$i} {
+    font-size: #{math.div($i, 10)}rem;
+  }
+}
