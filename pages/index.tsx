@@ -3,6 +3,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { Button } from 'antd'
+import { DeXPairsTable } from '../components/tables/dex-pairs'
 import styles from '../styles/Home.module.css'
 import { DEX_PROTOCOLS } from '../common/enums/types'
 import { openNotificationWithIcon } from '../common/utilities/notifications'
@@ -52,6 +53,8 @@ const Home: NextPage = () => {
           {' '}or{' '}
           <Button type="primary" loading={ephemeral.PS} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
         </p>
+
+        <DeXPairsTable />
       </main>
 
       <footer className={styles.footer}>
