@@ -17,8 +17,13 @@ const Home: NextPage = () => {
       return;
     }
     const protocol = DEX_PROTOCOLS[type]
-    const trades = getUniSwapTrades(protocol)
-    console.log(trades)
+    setEphemeral({ ...ephemeral, [type]: true })
+    getUniSwapTrades(protocol).then(trades => {
+      console.log(trades)
+      setEphemeral({ ...ephemeral, [type]: false })
+    }, error => {
+      setEphemeral({ ...ephemeral, [type]: false })
+    })
   }
 
   return (
@@ -36,11 +41,11 @@ const Home: NextPage = () => {
 
         <p className={styles.description}>
           Get started by clicking{' '}
-          <Button type="primary" loading={ephemeral.us2} shape="round" size="large" onClick={() => {requestDexTrades('US2')}}>Uniswap v2</Button>
+          <Button type="primary" loading={ephemeral.US2} shape="round" size="large" onClick={() => {requestDexTrades('US2')}}>Uniswap v2</Button>
           {' '}or{' '}
-          <Button type="primary" loading={ephemeral.us3} shape="round" size="large" onClick={() => {requestDexTrades('US3')}}>Uniswap v3</Button>
+          <Button type="primary" loading={ephemeral.US3} shape="round" size="large" onClick={() => {requestDexTrades('US3')}}>Uniswap v3</Button>
           {' '}or{' '}
-          <Button type="primary" loading={ephemeral.ps} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
+          <Button type="primary" loading={ephemeral.PS} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
         </p>
       </main>
 
