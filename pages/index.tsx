@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -10,6 +10,11 @@ import { getUniSwapTrades } from '../common/api/bitquery'
 
 const Home: NextPage = () => {
   const [ephemeral, setEphemeral] = useState({})
+  const [trades, setTrades] = useState(null)
+
+  useEffect(() => {
+    console.log(trades)
+  }, [trades])
 
   const requestDexTrades = (type) => {
     if (!type || !Object.keys(DEX_PROTOCOLS).includes(type)) {
@@ -18,9 +23,9 @@ const Home: NextPage = () => {
     }
     const protocol = DEX_PROTOCOLS[type]
     setEphemeral({ ...ephemeral, [type]: true })
-    getUniSwapTrades(protocol).then(trades => {
-      console.log(trades)
+    getUniSwapTrades(protocol).then(trds => {
       setEphemeral({ ...ephemeral, [type]: false })
+      setTrades(trds)
     }, error => {
       setEphemeral({ ...ephemeral, [type]: false })
     })

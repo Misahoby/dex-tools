@@ -1,4 +1,4 @@
 export const BITQUERY_CONFIG = {
-	GRAPHQL: false,
+	GRAPHQL: true,
 	X_API_KEY: 'BQYvhnv04csZHaprIBZNwtpRiDIwEIW9'
 }
