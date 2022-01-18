@@ -2,23 +2,16 @@ import { useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import { Button, notification } from 'antd'
+import { Button } from 'antd'
 import styles from '../styles/Home.module.css'
-
-const enum DEX_TYPES {
-  U2 = 'Uniswap v2',
-  U3 = 'Uniswap v3'
-}
-
-const openNotificationWithIcon = (type, title, description) => {
-  notification[type]({ message: title, description });
-};
+import { DEX_PROTOCOLS } from '../common/enums/types'
+import { openNotificationWithIcon } from '../common/utilities/notifications'
 
 const Home: NextPage = () => {
   const [ephemeral, setEphemeral] = useState({})
 
   const requestDexTrades = (type = 'U2') => {
-    if (!Object.keys(DEX_TYPES).includes(type)) {
+    if (!Object.keys(DEX_PROTOCOLS).includes(type)) {
       openNotificationWithIcon('error', 'Something Wrong', 'Unsupported protocol is requested. Please check it again.')
       return;
     }
@@ -26,7 +19,7 @@ const Home: NextPage = () => {
   }
 
   const requestUniswapTrades = (type) => {
-    const protocol = DEX_TYPES[type]
+    const protocol = DEX_PROTOCOLS[type]
   }
 
   return (
@@ -44,9 +37,11 @@ const Home: NextPage = () => {
 
         <p className={styles.description}>
           Get started by clicking{' '}
-          <Button type="primary" loading={ephemeral.u2} shape="round" size="large" onClick={() => {requestDexTrades('U2')}}>Uniswap v2</Button>
+          <Button type="primary" loading={ephemeral.u2} shape="round" size="large" onClick={() => {requestDexTrades('US2')}}>Uniswap v2</Button>
           {' '}or{' '}
-          <Button type="primary" loading={ephemeral.u3} shape="round" size="large" onClick={() => {requestDexTrades('U4')}}>Uniswap v3</Button>
+          <Button type="primary" loading={ephemeral.u3} shape="round" size="large" onClick={() => {requestDexTrades('US3')}}>Uniswap v3</Button>
+          {' '}or{' '}
+          <Button type="primary" loading={ephemeral.u3} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
         </p>
       </main>
 
