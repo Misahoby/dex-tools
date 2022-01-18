@@ -6,12 +6,13 @@ import { Button } from 'antd'
 import styles from '../styles/Home.module.css'
 import { DEX_PROTOCOLS } from '../common/enums/types'
 import { openNotificationWithIcon } from '../common/utilities/notifications'
+import { getUniSwapTrades } from '../common/api/bitquery'
 
 const Home: NextPage = () => {
   const [ephemeral, setEphemeral] = useState({})
 
-  const requestDexTrades = (type = 'U2') => {
-    if (!Object.keys(DEX_PROTOCOLS).includes(type)) {
+  const requestDexTrades = (type) => {
+    if (!type || !Object.keys(DEX_PROTOCOLS).includes(type)) {
       openNotificationWithIcon('error', 'Something Wrong', 'Unsupported protocol is requested. Please check it again.')
       return;
     }
@@ -20,6 +21,8 @@ const Home: NextPage = () => {
 
   const requestUniswapTrades = (type) => {
     const protocol = DEX_PROTOCOLS[type]
+    const trades = getUniSwapTrades(protocol)
+    console.log(trades)
   }
 
   return (
@@ -37,11 +40,11 @@ const Home: NextPage = () => {
 
         <p className={styles.description}>
           Get started by clicking{' '}
-          <Button type="primary" loading={ephemeral.u2} shape="round" size="large" onClick={() => {requestDexTrades('US2')}}>Uniswap v2</Button>
+          <Button type="primary" loading={ephemeral.us2} shape="round" size="large" onClick={() => {requestDexTrades('US2')}}>Uniswap v2</Button>
           {' '}or{' '}
-          <Button type="primary" loading={ephemeral.u3} shape="round" size="large" onClick={() => {requestDexTrades('US3')}}>Uniswap v3</Button>
+          <Button type="primary" loading={ephemeral.us3} shape="round" size="large" onClick={() => {requestDexTrades('US3')}}>Uniswap v3</Button>
           {' '}or{' '}
-          <Button type="primary" loading={ephemeral.u3} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
+          <Button type="primary" loading={ephemeral.ps} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
         </p>
       </main>
 
