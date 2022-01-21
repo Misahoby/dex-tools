@@ -58,9 +58,9 @@ const Home: NextPage = () => {
         <DeXPairsTable dexTrades={trades}/>
       </Col>
       <Col className="ml-auto pt-10">
-        <Button type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />
+        <Button disabled={ephemeral.loading} type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />
         <Space className="mx-5">{pagination.page}</Space>
-        <Button type="primary" icon={<RightOutlined />} onClick={() => onChangePagination(1)} />
+        <Button disabled={ephemeral.loading} type="primary" icon={<RightOutlined />} onClick={() => onChangePagination(1)} />
       </Col>
     </Row>
   </Fragment>)
