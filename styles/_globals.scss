@@ -73,3 +73,11 @@ a {
     font-size: #{math.div($i, 10)}rem;
   }
 }
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mr-auto {
+  margin-right: auto;
+}

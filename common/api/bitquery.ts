@@ -5,9 +5,9 @@ import { BITQUERY_GQL_URL } from '../constants/general'
 import { gqlToPromise } from '../utilities/graphql'
 import { DeXPair } from '../types/bitquery'
 
-const generateUniSwapGQLQuery = (protocol: string) => `{
+const generateUniSwapGQLQuery = (protocol: string, perPage: number, offset: number) => `{
   ethereum {
-    dexTrades(options: {limit: 100, desc: "count"}, protocol: {is: "${protocol}"}) {
+    dexTrades(options: {limit: ${perPage}, desc: "count", offset: ${offset}}, protocol: {is: "${protocol}"}) {
       count
       protocol
       buyCurrency {
@@ -24,16 +24,16 @@ const generateUniSwapGQLQuery = (protocol: string) => `{
   }
 }`
 
-export const getUniSwapTrades = (protocol: string): Promise<DeXPair> => {
+export const getUniSwapTrades = (protocol: string, perPage: number, offset: number): Promise<DeXPair> => {
 	return new Promise(async (resolve, reject) => {
 		if (BITQUERY_CONFIG.GRAPHQL) {
 			try {
-				resolve(await bitQueryApolloClient.query({ query: gql`${generateUniSwapGQLQuery(protocol)}` }))
+				resolve(await bitQueryApolloClient.query({ query: gql`${generateUniSwapGQLQuery(protocol, perPage, offset)}` }))
 			} catch (e) {
 				reject(e)	
 			}
 		} else {
-			gqlToPromise(BITQUERY_GQL_URL, generateUniSwapGQLQuery(protocol), {
+			gqlToPromise(BITQUERY_GQL_URL, generateUniSwapGQLQuery(protocol, perPage, offset), {
 				'X-API-KEY': BITQUERY_CONFIG.X_API_KEY	
 			}).then((data: DeXPair) => resolve(data), error => reject(error))
 		}	

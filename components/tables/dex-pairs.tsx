@@ -63,7 +63,7 @@ export const DeXPairsTable = ({ dexTrades }: {
 		sellCurrencyAddress: pair.sellCurrency.address
 	})), [dexTrades])
 
-	return (<div className="ag-theme-alpine" style={{ height: '500px', width: '100%' }}>
+	return (<div className="ag-theme-alpine" style={{ height: '800px', width: '100%' }}>
 		<AgGridReact ref={gridRef}
 			columnDefs={columnDefs}
 			defaultColDef={defaultColDef}
