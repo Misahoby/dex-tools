@@ -1,44 +1,81 @@
 import { useRef, useMemo } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 
-const fakeData: Object = {
-	columnDefs: [
-		{ headerName: "Protocol", field: "protocol" },
-		{ headerName: "Count", field: "count" },
-		{ headerName: "Buy Currency", field: "buyCurrency" },
-		{ headerName: "Sell Currency", field: "sellCurrency" }
-	],
-	rowData: [
-		{ protocol: "Uniswap v2", count: 10, buyCurrency: "BNB", sellCurrency: "USDT" },
-		{ protocol: "Uniswap v2", count: 10, buyCurrency: "BUSD", sellCurrency: "WETH" },
-		{ protocol: "Uniswap v3", count: 10, buyCurrency: "SOL", sellCurrency: "BTC" },
-		{ protocol: "Uniswap v2", count: 10, buyCurrency: "BNB", sellCurrency: "USDT" },
-		{ protocol: "Uniswap v2", count: 10, buyCurrency: "BUSD", sellCurrency: "WETH" },
-		{ protocol: "Uniswap v3", count: 10, buyCurrency: "SOL", sellCurrency: "BTC" },
-		{ protocol: "Uniswap v2", count: 10, buyCurrency: "BNB", sellCurrency: "USDT" },
-		{ protocol: "Uniswap v2", count: 10, buyCurrency: "BUSD", sellCurrency: "WETH" },
-		{ protocol: "Uniswap v3", count: 10, buyCurrency: "SOL", sellCurrency: "BTC" }
-	]
+interface DeXPairCurrency {
+	symbol: string,
+	name: string,
+	address: string
 }
 
-export const DeXPairsTable = ({}) => {
+interface DeXPair {
+	count: number,
+	protocol: string,
+	buyCurrency: DeXPairCurrency
+	sellCurrency: DeXPairCurrency
+}
+
+const columnDefs = [{
+		headerName: 'Protocol',
+		field: 'protocol'
+	}, {
+		headerName: 'Count',
+		field: 'count'
+	}, {
+	headerName: 'Buy Currency',
+	children: [{
+		headerName: 'Name',
+		field: 'buyCurrencyName'
+	}, {
+		headerName: 'Symbol',
+		field: 'buyCurrencySymbol'
+	}, {
+		headerName: 'Address',
+		field: 'buyCurrencyAddress'
+	}]
+}, {
+	headerName: 'Sell Currency',
+	children: [{
+		headerName: 'Name',
+		field: 'sellCurrencyName'
+	}, {
+		headerName: 'Symbol',
+		field: 'sellCurrencySymbol'
+	}, {
+		headerName: 'Address',
+		field: 'sellCurrencyAddress'
+	}]
+}]
+
+
+export const DeXPairsTable = ({ dexTrades }: {
+	dexTrades: Array<DeXPair>
+}) => {
 	const gridRef = useRef(null)
 
 	const defaultColDef = useMemo(()=> ({
-    resizable: true,
-    sortable: true,
-    flex: 1
+		resizable: true,
+		sortable: true,
+		flex: 1
 	}), []);
 
+	const rowData = useMemo(() => !dexTrades.data ? [] : dexTrades.data.ethereum.dexTrades.map(pair => ({
+		protocol: pair.protocol,
+		count: pair.count,
+		buyCurrencyName: pair.buyCurrency.name,
+		buyCurrencySymbol: pair.buyCurrency.symbol,
+		buyCurrencyAddress: pair.buyCurrency.address,
+		sellCurrencyName: pair.sellCurrency.name,
+		sellCurrencySymbol: pair.sellCurrency.symbol,
+		sellCurrencyAddress: pair.sellCurrency.address
+	})), [dexTrades])
+
 	return (<div className="ag-theme-alpine" style={{ height: '500px', width: '100%' }}>
-		<AgGridReact
-			ref={gridRef}
-			columnDefs={fakeData.columnDefs}
+		<AgGridReact ref={gridRef}
+			columnDefs={columnDefs}
 			defaultColDef={defaultColDef}
-			rowData={fakeData.rowData}
+			rowData={rowData}
 			enableRangeSelection
-			animateRows
-		>
+			animateRows>
 		</AgGridReact>
-	</div>)
+		</div>)
 }

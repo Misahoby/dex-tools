@@ -5,20 +5,22 @@ import { BITQUERY_GQL_URL } from '../constants/general'
 import { gqlToPromise } from '../utilities/graphql'
 
 const generateUniSwapGQLQuery = protocol => `{
-	ethereum {
-		dexTrades(protocol: {is: "${protocol}"}, options: {limit: 100, desc: "count"}) {
-			count
-			protocol
-			buyCurrency {
-				name
-				symbol
-			}
-			sellCurrency {
-				name
-				symbol
-			}
-		}
-	}
+  ethereum {
+    dexTrades(options: {limit: 100, desc: "count"}, protocol: {is: "${protocol}"}) {
+      count
+      protocol
+      buyCurrency {
+        symbol
+        name
+        address
+      }
+      sellCurrency {
+        symbol
+        name
+        address
+      }
+    }
+  }
 }`
 
 export const getUniSwapTrades = (protocol) => {

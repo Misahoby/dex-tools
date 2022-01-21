@@ -1,15 +1,18 @@
 import { useState, useEffect, Fragment } from 'react'
 import type { NextPage } from 'next'
 import Image from 'next/image'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Select } from 'antd'
 import { DeXPairsTable } from '../components/tables/dex-pairs'
 import { DEX_PROTOCOLS } from '../common/enums/types'
 import { openNotificationWithIcon } from '../common/utilities/notifications'
 import { getUniSwapTrades } from '../common/api/bitquery'
+const { Option } = Select;
 
 const Home: NextPage = () => {
-  const [ephemeral, setEphemeral] = useState({})
-  const [trades, setTrades] = useState(null)
+  const [ephemeral, setEphemeral] = useState({
+    loading: false
+  })
+  const [trades, setTrades] = useState([])
 
   useEffect(() => {
     console.log(trades)
@@ -21,12 +24,12 @@ const Home: NextPage = () => {
       return;
     }
     const protocol = DEX_PROTOCOLS[type]
-    setEphemeral({ ...ephemeral, [type]: true })
+    setEphemeral({ ...ephemeral, loading: true })
     getUniSwapTrades(protocol).then(trds => {
-      setEphemeral({ ...ephemeral, [type]: false })
+      setEphemeral({ ...ephemeral, loading: false })
       setTrades(trds)
     }, error => {
-      setEphemeral({ ...ephemeral, [type]: false })
+      setEphemeral({ ...ephemeral, loading: false })
     })
   }
 
@@ -38,19 +41,19 @@ const Home: NextPage = () => {
     </Row>
     <Row justify="center">
       <Col>
-        <p className="font-size-15">
-          Get started by clicking{' '}
-          <Button type="primary" loading={ephemeral.US2} shape="round" size="large" onClick={() => {requestDexTrades('US2')}}>Uniswap v2</Button>
-          {' '}or{' '}
-          <Button type="primary" loading={ephemeral.US3} shape="round" size="large" onClick={() => {requestDexTrades('US3')}}>Uniswap v3</Button>
-          {' '}or{' '}
-          <Button type="primary" loading={ephemeral.PS} shape="round" size="large" onClick={() => {requestDexTrades('PS')}} danger>PancakeSwap</Button>
-        </p>
+        <div className="font-size-15 mb-10">
+          Get pairs on {' '}
+          <Select defaultValue="US2" size="large" loading={ephemeral.loading} onChange={requestDexTrades}>
+            <Option value="US2">UniSwap v2</Option>
+            <Option value="US3">UniSwap v3</Option>
+            <Option value="PS" disabled>PancakeSwap</Option>
+          </Select>
+        </div>
       </Col>
     </Row>
     <Row justify="center">
       <Col span={24}>
-        <DeXPairsTable />
+        <DeXPairsTable dexTrades={trades}/>
       </Col>
     </Row>
   </Fragment>)
