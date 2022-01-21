@@ -32,7 +32,7 @@ const Home: NextPage = () => {
   }
 
   const onChangePagination = (diff: number) => {
-    setPagination({ ...pagination, page: Math.max(0, pagination.page + diff) })
+    setPagination({ ...pagination, page: Math.max(1, pagination.page + diff) })
   }
 
   return (<Fragment>
@@ -58,7 +58,7 @@ const Home: NextPage = () => {
         <DeXPairsTable dexTrades={trades}/>
       </Col>
       <Col className="ml-auto pt-10">
-        <Button disabled={ephemeral.loading} type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />
+        <Button disabled={ephemeral.loading || pagination.page < 2} type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />
         <Space className="mx-5">{pagination.page}</Space>
         <Button disabled={ephemeral.loading} type="primary" icon={<RightOutlined />} onClick={() => onChangePagination(1)} />
       </Col>
