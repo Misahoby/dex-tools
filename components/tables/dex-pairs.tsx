@@ -16,33 +16,41 @@ interface DeXPair {
 
 const columnDefs = [{
 		headerName: 'Protocol',
-		field: 'protocol'
+		field: 'protocol',
+		width: 125
 	}, {
 		headerName: 'Count',
-		field: 'count'
+		field: 'count',
+		width: 95
 	}, {
 	headerName: 'Buy Currency',
 	children: [{
 		headerName: 'Name',
-		field: 'buyCurrencyName'
+		field: 'buyCurrencyName',
+		width: 155
 	}, {
 		headerName: 'Symbol',
-		field: 'buyCurrencySymbol'
+		field: 'buyCurrencySymbol',
+		width: 95
 	}, {
 		headerName: 'Address',
-		field: 'buyCurrencyAddress'
+		field: 'buyCurrencyAddress',
+		flex: 1
 	}]
 }, {
 	headerName: 'Sell Currency',
 	children: [{
 		headerName: 'Name',
-		field: 'sellCurrencyName'
+		field: 'sellCurrencyName',
+		width: 155
 	}, {
 		headerName: 'Symbol',
-		field: 'sellCurrencySymbol'
+		field: 'sellCurrencySymbol',
+		width: 95
 	}, {
 		headerName: 'Address',
-		field: 'sellCurrencyAddress'
+		field: 'sellCurrencyAddress',
+		flex: 1
 	}]
 }]
 
@@ -54,8 +62,7 @@ export const DeXPairsTable = ({ dexTrades }: {
 
 	const defaultColDef = useMemo(()=> ({
 		resizable: true,
-		sortable: true,
-		flex: 1
+		sortable: true
 	}), []);
 
 	const rowData = useMemo(() => !dexTrades.data ? [] : dexTrades.data.ethereum.dexTrades.map(pair => ({
