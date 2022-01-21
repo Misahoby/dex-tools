@@ -22,11 +22,11 @@ const Home: NextPage = () => {
   const requestDexTrades = (protocol: DEX_PROTOCOLS) => {
     setEphemeral({ ...ephemeral, loading: true })
     getUniSwapTrades(protocol).then((trds: DeXPair) => {
-      setEphemeral({ ...ephemeral, loading: false })
       setTrades(trds)
-    }, error => {
       setEphemeral({ ...ephemeral, loading: false })
+    }, error => {
       openNotificationWithIcon('error', 'Something Wrong', 'Please check internet connection.')
+      setEphemeral({ ...ephemeral, loading: false })
     })
   }
   return (<Fragment>
@@ -40,8 +40,8 @@ const Home: NextPage = () => {
         <div className="font-size-15 mb-10">
           Get pairs on {' '}
           <Select defaultValue={ephemeral.defProtocol} size="large" loading={ephemeral.loading} onChange={requestDexTrades}>
-            <Option value="DEX_PROTOCOLS.US2">UniSwap v2</Option>
-            <Option value="DEX_PROTOCOLS.US3">UniSwap v3</Option>
+            <Option value={DEX_PROTOCOLS.US2}>UniSwap v2</Option>
+            <Option value={DEX_PROTOCOLS.US3}>UniSwap v3</Option>
             <Option value="PS" disabled>PancakeSwap</Option>
           </Select>
         </div>
