@@ -10,19 +10,34 @@ import { openNotificationWithIcon } from '../common/utilities/notifications'
 import { getUniSwapTrades } from '../common/api/bitquery'
 const { Option } = Select
 
+interface DeXQuery {
+  protocol: DEX_PROTOCOLS,
+  currency: string,
+  pagination: Pagination
+}
+
 const Home: NextPage = () => {
   const [ephemeral, setEphemeral] = useState({ loading: false })
   const [trades, setTrades] = useState<DeXPair | null>(null)
-  const [protocol, setProtocol] = useState<DEX_PROTOCOLS>(DEX_PROTOCOLS.US2)
-  const [pagination, setPagination] = useState<Pagination>({ perPage: 100, page: 1 })
+
+  const [query, setQuery] = useState<DeXQuery>({
+    protocol: DEX_PROTOCOLS.US2,
+    currency: '',
+    pagination: { perPage: 100, page: 1 }
+  })
 
   useEffect(() => {
     requestDexTrades()
-  }, [protocol, pagination])
+  }, [query])
 
   const requestDexTrades = () => {
     setEphemeral({ ...ephemeral, loading: true })
-    getUniSwapTrades(protocol, pagination.perPage, pagination.perPage * (pagination.page - 1)).then((trds: DeXPair) => {
+    getUniSwapTrades({
+      protocol: query.protocol,
+      perPage: query.pagination.perPage,
+      offset: query.pagination.perPage * (query.pagination.page - 1),
+      currency: query.currency
+    }).then((trds: DeXPair) => {
       setTrades(trds)
       setEphemeral({ ...ephemeral, loading: false })
     }, error => {
@@ -32,7 +47,36 @@ const Home: NextPage = () => {
   }
 
   const onChangePagination = (diff: number) => {
-    setPagination({ ...pagination, page: Math.max(1, pagination.page + diff) })
+    setQuery({
+      ...query,
+      pagination: {
+        ...query.pagination,
+        page: Math.max(1, query.pagination.page + diff)
+      }
+    })
+  }
+
+  const onChangeProtocol = (prtc: DEX_PROTOCOLS) => {
+    setQuery({
+      ...query,
+      protocol: prtc,
+      currency: '',
+      pagination: {
+        ...query.pagination,
+        page: 1
+      }
+    })
+  }
+
+  const onChangeCurrency = (currency: string) => {
+    setQuery({
+      ...query,
+      currency,
+      pagination: {
+        ...query.pagination,
+        page: 1
+      }
+    })
   }
 
   return (<Fragment>
@@ -45,7 +89,7 @@ const Home: NextPage = () => {
       <Col>
         <Space className="font-size-15 mb-10">
           Get pairs on {' '}
-          <Select defaultValue={protocol} size="large" loading={ephemeral.loading} onChange={setProtocol}>
+          <Select defaultValue={query.protocol} size="large" loading={ephemeral.loading} onChange={onChangeProtocol}>
             <Option value={DEX_PROTOCOLS.US2}>UniSwap v2</Option>
             <Option value={DEX_PROTOCOLS.US3}>UniSwap v3</Option>
             <Option value="PS" disabled>PancakeSwap</Option>
@@ -55,11 +99,11 @@ const Home: NextPage = () => {
     </Row>
     <Row justify="center" className="mb-30">
       <Col span={24}>
-        <DeXPairsTable dexTrades={trades}/>
+        <DeXPairsTable dexTrades={trades} onChangeCurrency={onChangeCurrency} />
       </Col>
       <Col className="ml-auto pt-10">
-        <Button disabled={ephemeral.loading || pagination.page < 2} type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />
-        <Space className="mx-5">{pagination.page}</Space>
+        <Button disabled={ephemeral.loading || query.pagination.page < 2} type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />
+        <Space className="mx-5">{query.pagination.page}</Space>
         <Button disabled={ephemeral.loading} type="primary" icon={<RightOutlined />} onClick={() => onChangePagination(1)} />
       </Col>
     </Row>

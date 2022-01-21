@@ -42,8 +42,9 @@ const columnDefs = [{
 	}]
 }]
 
-export const DeXPairsTable = ({ dexTrades }: {
-	dexTrades: DeXPair | null
+export const DeXPairsTable = ({ dexTrades, onChangeCurrency }: {
+	dexTrades: DeXPair | null,
+	onChangeCurrency: Function
 }) => {
 	const gridRef = useRef(null)
 
@@ -63,13 +64,21 @@ export const DeXPairsTable = ({ dexTrades }: {
 		sellCurrencyAddress: pair.sellCurrency.address
 	})), [dexTrades])
 
+	const onCellClicked = (params: any) => {
+		if (params.type === 'cellClicked' && (
+			params.column.colId === 'buyCurrencyAddress' || params.column.colId === 'sellCurrencyAddress')) {
+			onChangeCurrency(params.value)
+		}
+	}
+
 	return (<div className="ag-theme-alpine" style={{ height: '800px', width: '100%' }}>
 		<AgGridReact ref={gridRef}
 			columnDefs={columnDefs}
 			defaultColDef={defaultColDef}
 			rowData={rowData}
 			enableRangeSelection
-			animateRows>
+			animateRows
+			onCellClicked={onCellClicked}>
 		</AgGridReact>
 		</div>)
 }

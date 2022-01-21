@@ -22,3 +22,10 @@ export interface DeXPair {
 	}
 	
 }
+
+export interface UniSwapBitqueryReqParams {
+	protocol: string,
+	perPage: number,
+	offset: number,
+	currency: string
+}
