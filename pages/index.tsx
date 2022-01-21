@@ -11,12 +11,12 @@ const { Option } = Select;
 const Home: NextPage = () => {
   const [ephemeral, setEphemeral] = useState({
     loading: false,
-    curProtocol: 'US2'
+    defProtocol: Object.keys(DEX_PROTOCOLS)[0]
   })
   const [trades, setTrades] = useState([])
 
   useEffect(() => {
-    requestDexTrades(ephemeral.curProtocol)
+    requestDexTrades(ephemeral.defProtocol)
   }, [])
 
   const requestDexTrades = (type) => {
@@ -33,12 +33,6 @@ const Home: NextPage = () => {
       setEphemeral({ ...ephemeral, loading: false })
     })
   }
-
-  const onChangeDeXProtocol = (protocol) => {
-    setEphemeral({ ...ephemeral, curProtocol: protocol })
-    requestDexTrades(protocol)
-  }
-
   return (<Fragment>
     <Row justify="center" className="pt-30">
       <Col>
@@ -49,7 +43,7 @@ const Home: NextPage = () => {
       <Col>
         <div className="font-size-15 mb-10">
           Get pairs on {' '}
-          <Select value={ephemeral.curProtocol} size="large" loading={ephemeral.loading} onChange={onChangeDeXProtocol}>
+          <Select defaultValue={ephemeral.defProtocol} size="large" loading={ephemeral.loading} onChange={requestDexTrades}>
             <Option value="US2">UniSwap v2</Option>
             <Option value="US3">UniSwap v3</Option>
             <Option value="PS" disabled>PancakeSwap</Option>
