@@ -1,4 +1,4 @@
-export const gqlToPromise = (uri, query, headers = {}) => {
+export const gqlToPromise = (uri: string, query: string, headers = {}): Promise<any> => {
 	return new Promise((resolve, reject) => {
 		fetch(uri, {
 			method: 'POST',

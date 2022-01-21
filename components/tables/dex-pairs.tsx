@@ -1,28 +1,16 @@
 import { useRef, useMemo } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-
-interface DeXPairCurrency {
-	symbol: string,
-	name: string,
-	address: string
-}
-
-interface DeXPair {
-	count: number,
-	protocol: string,
-	buyCurrency: DeXPairCurrency
-	sellCurrency: DeXPairCurrency
-}
+import { DeXPair } from '../../common/types/bitquery'
 
 const columnDefs = [{
-		headerName: 'Protocol',
-		field: 'protocol',
-		width: 125
-	}, {
-		headerName: 'Count',
-		field: 'count',
-		width: 95
-	}, {
+	headerName: 'Protocol',
+	field: 'protocol',
+	width: 125
+}, {
+	headerName: 'Count',
+	field: 'count',
+	width: 95
+}, {
 	headerName: 'Buy Currency',
 	children: [{
 		headerName: 'Name',
@@ -54,9 +42,8 @@ const columnDefs = [{
 	}]
 }]
 
-
 export const DeXPairsTable = ({ dexTrades }: {
-	dexTrades: Array<DeXPair>
+	dexTrades: DeXPair | null
 }) => {
 	const gridRef = useRef(null)
 
@@ -65,7 +52,7 @@ export const DeXPairsTable = ({ dexTrades }: {
 		sortable: true
 	}), []);
 
-	const rowData = useMemo(() => !dexTrades.data ? [] : dexTrades.data.ethereum.dexTrades.map(pair => ({
+	const rowData = useMemo(() => !dexTrades ? [] : dexTrades.data.ethereum.dexTrades.map(pair => ({
 		protocol: pair.protocol,
 		count: pair.count,
 		buyCurrencyName: pair.buyCurrency.name,
