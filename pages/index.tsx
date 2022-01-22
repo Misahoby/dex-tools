@@ -1,8 +1,9 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, useCallback, Fragment } from 'react'
 import type { NextPage } from 'next'
 import Image from 'next/image'
-import { Row, Col, Button, Select, Space } from 'antd'
+import { Row, Col, Button, Select, Space, Input } from 'antd'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import debounce from 'lodash/debounce'
 import { DeXPairsTable } from '../components/tables/dex-pairs'
 import { DEX_PROTOCOLS, DeXPair } from '../common/types/bitquery'
 import { Pagination } from '../common/types/general'
@@ -27,7 +28,7 @@ const Home: NextPage = () => {
   })
 
   useEffect(() => {
-    requestDexTrades()
+    debouncedRequestDeXTrades()
   }, [query])
 
   const requestDexTrades = () => {
@@ -45,6 +46,8 @@ const Home: NextPage = () => {
       setEphemeral({ ...ephemeral, loading: false })
     })
   }
+
+  const debouncedRequestDeXTrades = useCallback(debounce(requestDexTrades, 300), [query])
 
   const onChangePagination = (diff: number) => {
     setQuery({
@@ -85,11 +88,17 @@ const Home: NextPage = () => {
         <p className="font-size-30">Welcome to <a href="#">DeX Tools</a></p>
       </Col>
     </Row>
-    <Row justify="center">
-      <Col>
-        <Space className="font-size-15 mb-10">
-          Get pairs on {' '}
-          <Select defaultValue={query.protocol} size="large" loading={ephemeral.loading} onChange={onChangeProtocol}>
+    <Row justify="space-between" gutter={4} className="mb-10 px-10">
+      <Col xs={24} sm={12}>
+        <Space className="font-size-10">
+          Currency:{' '}
+          <Input placeholder="Please type currency address and press Enter" value={query.currency} onChange={event => onChangeCurrency(event.target.value)} />
+        </Space>
+      </Col>
+      <Col xs={24} sm={12}>
+        <Space className="font-size-10">
+          Protocol:{' '}
+          <Select defaultValue={query.protocol} loading={ephemeral.loading} onChange={onChangeProtocol} style={{ width: 200 }}>
             <Option value={DEX_PROTOCOLS.US2}>UniSwap v2</Option>
             <Option value={DEX_PROTOCOLS.US3}>UniSwap v3</Option>
             <Option value="PS" disabled>PancakeSwap</Option>
@@ -97,7 +106,7 @@ const Home: NextPage = () => {
         </Space>
       </Col>
     </Row>
-    <Row justify="center" className="mb-30">
+    <Row justify="center" className="mb-30 px-10">
       <Col span={24}>
         <DeXPairsTable dexTrades={trades} onChangeCurrency={onChangeCurrency} />
       </Col>
