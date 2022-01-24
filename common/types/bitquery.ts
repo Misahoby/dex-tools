@@ -3,20 +3,37 @@ export enum DEX_PROTOCOLS {
 	US3 = 'Uniswap v3'
 }
 
-export interface DeXPairCurrency {
+interface BitQueryDeXCurrency {
 	symbol: string,
 	name: string,
 	address: string
 }
 
-export interface DeXPair {
+interface BitQueryDeXDate {
+	date: string
+}
+
+interface BitQueryDeXMakerTaker {
+	address: string
+}
+
+type BitQueryDeXTradeSide = 'SELL' | 'BUY'
+
+export interface BitQueryDeXTradeRes {
 	data: {
 		ethereum: {
 			dexTrades: [{
 				count: number,
 				protocol: string,
-				buyCurrency: DeXPairCurrency
-				sellCurrency: DeXPairCurrency			
+				date: BitQueryDeXDate,
+				buyCurrency: BitQueryDeXCurrency,
+				buyAmount: number,
+				sellCurrency: BitQueryDeXCurrency,
+				sellAmount: number,
+				side: BitQueryDeXTradeSide,
+				maker: BitQueryDeXMakerTaker,
+				taker: BitQueryDeXMakerTaker,
+				price: number
 			}]
 		}
 	}

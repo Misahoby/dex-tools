@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { AgGridReact } from 'ag-grid-react'
-import { DeXPair } from '../../common/types/bitquery'
+import { BitQueryDeXTradeRes } from '../../common/types/bitquery'
 
 const columnDefs = [{
 	headerName: 'Protocol',
@@ -42,8 +42,8 @@ const columnDefs = [{
 	}]
 }]
 
-export const DeXPairsTable = ({ dexTrades, onChangeCurrency }: {
-	dexTrades: DeXPair | null,
+export const DeXTradePairsTable = ({ dexTrades, onChangeCurrency }: {
+	dexTrades: BitQueryDeXTradeRes | null,
 	onChangeCurrency: Function
 }) => {
 	const gridRef = useRef(null)
