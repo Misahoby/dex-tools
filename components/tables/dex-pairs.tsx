@@ -5,46 +5,46 @@ import { BitQueryDeXTradeRes } from '../../common/types/bitquery'
 const columnDefs = [{
 	headerName: 'Protocol',
 	field: 'protocol',
-	width: 125
+	flex: 1
 }, {
 	headerName: 'Count',
 	field: 'count',
-	width: 95
+	flex: 1
 }, {
-	headerName: 'Buy Currency',
+	headerName: 'Base Currency',
 	children: [{
 		headerName: 'Name',
 		field: 'buyCurrencyName',
-		width: 155
+		flex: 1
 	}, {
 		headerName: 'Symbol',
 		field: 'buyCurrencySymbol',
-		width: 95
-	}, {
+		flex: 1
+	}/*, {
 		headerName: 'Address',
 		field: 'buyCurrencyAddress',
 		flex: 1
-	}]
+	}*/]
 }, {
-	headerName: 'Sell Currency',
+	headerName: 'Quote Currency',
 	children: [{
 		headerName: 'Name',
 		field: 'sellCurrencyName',
-		width: 155
+		flex: 1
 	}, {
 		headerName: 'Symbol',
 		field: 'sellCurrencySymbol',
-		width: 95
-	}, {
+		flex: 1
+	}/*, {
 		headerName: 'Address',
 		field: 'sellCurrencyAddress',
 		flex: 1
-	}]
+	}*/]
 }]
 
-export const DeXTradePairsTable = ({ dexTrades, onChangeCurrency }: {
+export const DeXTradePairsTable = ({ dexTrades, onSelectTokenAddress }: {
 	dexTrades: BitQueryDeXTradeRes | null,
-	onChangeCurrency: Function
+	onSelectTokenAddress: Function
 }) => {
 	const gridRef = useRef(null)
 
@@ -65,9 +65,12 @@ export const DeXTradePairsTable = ({ dexTrades, onChangeCurrency }: {
 	})), [dexTrades])
 
 	const onCellClicked = (params: any) => {
-		if (params.type === 'cellClicked' && (
-			params.column.colId === 'buyCurrencyAddress' || params.column.colId === 'sellCurrencyAddress')) {
-			onChangeCurrency(params.value)
+		if (params.type === 'cellClicked') {
+			if (params.column.colId === 'buyCurrencySymbol' || params.column.colId === 'buyCurrencyName') {
+				onSelectTokenAddress(params.data.buyCurrencyAddress)
+			} else if (params.column.colId === 'sellCurrencySymbol' || params.column.colId === 'sellCurrencyName') {
+				onSelectTokenAddress(params.data.sellCurrencyAddress)
+			}
 		}
 	}
 

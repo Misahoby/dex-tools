@@ -14,8 +14,15 @@ const { Option } = Select
 
 interface DeXQuery {
   protocol: DEX_PROTOCOLS,
-  currency: string,
+  baseCurrency: string,
+  quoteCurrency: string,
   pagination: Pagination
+}
+
+interface TokenCurrency {
+  address: string,
+  name: string,
+  symbol: string
 }
 
 const Home: NextPage = () => {
@@ -25,7 +32,8 @@ const Home: NextPage = () => {
 
   const [query, setQuery] = useState<DeXQuery>({
     protocol: DEX_PROTOCOLS.US2,
-    currency: '',
+    baseCurrency: '',
+    quoteCurrency: '',
     pagination: { perPage: 100, page: 1 }
   })
 
@@ -35,13 +43,15 @@ const Home: NextPage = () => {
 
   const requestDexTrades = () => {
     setEphemeral({ ...ephemeral, loading: true })
-    getUniSwapTrades({
+    const q = {
       protocol: query.protocol,
       perPage: query.pagination.perPage,
       offset: query.pagination.perPage * (query.pagination.page - 1),
-      currency: query.currency
-    }).then((res: BitQueryDeXTradeRes) => {
-      if (query.currency) {
+      baseCurrency: query.baseCurrency,
+      quoteCurrency: query.quoteCurrency
+    }
+    getUniSwapTrades(q).then((res: BitQueryDeXTradeRes) => {
+      if (q.baseCurrency) {
         setTransactions(res)
       } else {
         setTrades(res)
@@ -69,7 +79,8 @@ const Home: NextPage = () => {
     setQuery({
       ...query,
       protocol: prtc,
-      currency: '',
+      baseCurrency: '',
+      quoteCurrency: '',
       pagination: {
         ...query.pagination,
         page: 1
@@ -77,10 +88,22 @@ const Home: NextPage = () => {
     })
   }
 
-  const onChangeCurrency = (currency: string) => {
+  const onChangeBaseCurrency = (baseCurrency: string) => {
     setQuery({
       ...query,
-      currency,
+      baseCurrency,
+      quoteCurrency: '',
+      pagination: {
+        ...query.pagination,
+        page: 1
+      }
+    })
+  }
+
+  const onChangeQuoteCurrency = (quoteCurrency: string) => {
+    setQuery({
+      ...query,
+      quoteCurrency,
       pagination: {
         ...query.pagination,
         page: 1
@@ -95,13 +118,17 @@ const Home: NextPage = () => {
       </Col>
     </Row>
     <Row justify="space-between" gutter={4} className="mb-10 px-10">
-      <Col xs={24} sm={12}>
+      <Col xs={24} sm={16}>
         <Space className="font-size-10">
-          Currency:{' '}
-          <Input placeholder="Please type currency address and press Enter" value={query.currency} onChange={event => onChangeCurrency(event.target.value)} />
+          Currency1:{' '}
+          <Input placeholder="Please type token contract address and press Enter" allowClear
+            value={query.baseCurrency} onChange={event => onChangeBaseCurrency(event.target.value)} />
+          Currency2:{' '}
+          <Input placeholder="Please type token contract address and press Enter" allowClear
+            value={query.quoteCurrency} onChange={event => onChangeQuoteCurrency(event.target.value)} />
         </Space>
       </Col>
-      <Col xs={24} sm={12}>
+      <Col xs={24} sm={8}>
         <Space className="font-size-10">
           Protocol:{' '}
           <Select defaultValue={query.protocol} loading={ephemeral.loading} onChange={onChangeProtocol} style={{ width: 200 }}>
@@ -114,7 +141,10 @@ const Home: NextPage = () => {
     </Row>
     <Row justify="center" className="mb-30 px-10">
       <Col span={24}>
-      {!query.currency ? <DeXTradePairsTable dexTrades={trades} onChangeCurrency={onChangeCurrency} /> : <DeXTransactionsTable dexTransactions={transactions} />}
+      {!query.baseCurrency ?
+        <DeXTradePairsTable dexTrades={trades} onSelectTokenAddress={onChangeBaseCurrency} /> :
+        <DeXTransactionsTable dexTransactions={transactions} onSelectTokenAddress={onChangeQuoteCurrency}
+          baseCurrency={query.baseCurrency} quoteCurrency={query.quoteCurrency} />}
       </Col>
       <Col className="ml-auto pt-10">
         <Button disabled={ephemeral.loading || query.pagination.page < 2} type="primary" icon={<LeftOutlined />} onClick={() => onChangePagination(-1)} />

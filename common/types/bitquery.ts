@@ -9,6 +9,11 @@ interface BitQueryDeXCurrency {
 	address: string
 }
 
+interface BitQueryTimeInterval {
+	minute: string,
+	second: string
+}
+
 interface BitQueryDeXDate {
 	date: string
 }
@@ -26,6 +31,9 @@ export interface BitQueryDeXTradeRes {
 				count: number,
 				protocol: string,
 				date: BitQueryDeXDate,
+				baseAmount: number,
+				baseCurrency: BitQueryDeXCurrency,
+				quoteCurrency: BitQueryDeXCurrency, 
 				buyCurrency: BitQueryDeXCurrency,
 				buyAmount: number,
 				sellCurrency: BitQueryDeXCurrency,
@@ -33,7 +41,9 @@ export interface BitQueryDeXTradeRes {
 				side: BitQueryDeXTradeSide,
 				maker: BitQueryDeXMakerTaker,
 				taker: BitQueryDeXMakerTaker,
-				price: number
+				timeInterval: BitQueryTimeInterval,
+				price: number,
+				quotePrice: number
 			}]
 		}
 	}
@@ -44,5 +54,6 @@ export interface UniSwapBitqueryReqParams {
 	protocol: string,
 	perPage: number,
 	offset: number,
-	currency: string
+	baseCurrency: string,
+	quoteCurrency: string
 }

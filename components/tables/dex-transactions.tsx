@@ -5,47 +5,44 @@ import { BitQueryDeXTradeRes } from '../../common/types/bitquery'
 const columnDefs = [{
 	headerName: 'Date',
 	field: 'date',
-	width: 130
-}, {
+	width: 170
+}/*, {
 	headerName: 'Protocol',
 	field: 'protocol',
 	width: 125
-}, {
+}*/, {
 	headerName: 'Type',
 	field: 'type',
-	width: 70
-}, {
-	headerName: 'Sell Currency',
-	field: 'sellCurrency',
-	width: 125
-}, {
-	headerName: 'Sell Amount',
-	field: 'sellAmount',
-	width: 125
-}, {
-	headerName: 'Price',
-	field: 'price',
-	width: 70
-}, {
-	headerName: 'Buy Currency',
-	field: 'buyCurrency',
-	width: 125
-}, {
-	headerName: 'Buy Amount',
-	field: 'buyAmount',
-	width: 125
-}, {
-	headerName: 'Maker',
-	field: 'makerAddress',
 	flex: 1
 }, {
-	headerName: 'Taker',
-	field: 'takerAddress',
+	headerName: 'Amount',
+	field: 'baseAmount',
+	flex: 1
+}, {
+	headerName: 'Base Currency',
+	children: [{
+		headerName: 'Symbol',
+		field: 'baseSymbol',
+		flex: 1
+	}]
+}, {
+	headerName: 'Quote Currency',
+	children: [{
+		headerName: 'Symbol',
+		field: 'quoteSymbol',
+		flex: 1
+	}]
+}, {
+	headerName: 'Quote Price',
+	field: 'quotePrice',
 	flex: 1
 }]
 
-export const DeXTransactionsTable = ({ dexTransactions }: {
-	dexTransactions: BitQueryDeXTradeRes | null
+export const DeXTransactionsTable = ({ dexTransactions, onSelectTokenAddress, baseCurrency, quoteCurrency }: {
+	dexTransactions: BitQueryDeXTradeRes | null,
+	baseCurrency: string,
+	quoteCurrency?: string,
+	onSelectTokenAddress: Function
 }) => {
 	const gridRef = useRef(null)
 
@@ -55,17 +52,31 @@ export const DeXTransactionsTable = ({ dexTransactions }: {
 	}), []);
 
 	const rowData = useMemo(() => !dexTransactions ? [] : dexTransactions.data.ethereum.dexTrades.map(data => ({
-		date: data.date.date,
-		protocol: data.protocol,
+		date: data.timeInterval.second,
+		// protocol: data.protocol,
 		type: data.side,
-		sellCurrency: data.sellCurrency.symbol,
-		sellAmount: data.sellAmount,
-		price: data.price,
-		buyCurrency: data.buyCurrency.symbol,
-		buyAmount: data.buyAmount,
-		makerAddress: data.maker.address,
-		takerAddress: data.taker.address
+		baseAmount: data.baseAmount,
+		baseSymbol: data.baseCurrency.symbol,
+		quoteSymbol: data.quoteCurrency.symbol,
+		quoteAddress: data.quoteCurrency.address,
+		quotePrice: data.quotePrice,
 	})), [dexTransactions])
+
+	// const columnDefs = useMemo(() => {
+	// 	const baseSymbol = !dexTransactions || !baseCurrency ? '' :
+	// 		dexTransactions.data.ethereum.dexTrades.find(data => data.baseCurrency.address === baseCurrency)?.symbol || ''
+	// 	const quoteSymbol = !dexTransactions || !quoteCurrency ? '' :
+	// 		dexTransactions.data.ethereum.dexTrades.find(data => data.quoteCurrency.address === quoteCurrency)?.symbol || ''
+	// 	return generateColumnDefs(baseSymbol, quoteSymbol)
+	// }, [dexTransactions])
+
+	const onCellClicked = (params: any) => {
+		if (params.type === 'cellClicked') {
+			if (params.column.colId === 'quoteSymbol') {
+				onSelectTokenAddress(params.data.quoteAddress)
+			}
+		}
+	}
 
 	return (<div className="ag-theme-alpine" style={{ height: '800px', width: '100%' }}>
 		<AgGridReact ref={gridRef}
@@ -73,7 +84,8 @@ export const DeXTransactionsTable = ({ dexTransactions }: {
 			defaultColDef={defaultColDef}
 			rowData={rowData}
 			enableRangeSelection
-			animateRows>
+			animateRows
+			onCellClicked={onCellClicked}>
 		</AgGridReact>
 		</div>)
 }

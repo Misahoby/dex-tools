@@ -38,42 +38,36 @@ const generateUniSwapGQLDeXTransactionsQuery = (params: UniSwapBitqueryReqParams
     dexTrades(
       options: {
         limit: ${params.perPage},
-        desc: "date.date",
+        desc: "timeInterval.second",
         offset: ${params.offset}
       }
       protocol: {is: "${params.protocol}"}
-      baseCurrency: {is: "${params.currency}"}
+      baseCurrency: {is: "${params.baseCurrency}"}
+      ${params.quoteCurrency ? "quoteCurrency: {is: \"" + params.quoteCurrency + "\"}" : ""}
     ) {
       protocol
-      date {
-        date(format: "%Y-%m-%d %T")
+      timeInterval {
+        second
       }
-      buyAmount
-      sellAmount
+      baseAmount
       side
-      maker {
-        address
-      }
-      taker {
-        address
-      }
-      buyCurrency {
+      baseCurrency {
         address
         name
         symbol
       }
-      sellCurrency {
+      quoteCurrency {
         address
         name
         symbol
       }
-      price
+      quotePrice
     }
   }
 }`
 
 const generateDeXTradesQuery = (params: UniSwapBitqueryReqParams) => {
-  if (params.currency) {
+  if (params.baseCurrency) {
     return generateUniSwapGQLDeXTransactionsQuery(params)
   } else {
     return generateUniSwapGQLDeXPairsQuery(params)
